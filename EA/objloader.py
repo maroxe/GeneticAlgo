@@ -59,8 +59,6 @@ def load_obj(filename, swapyz=False):
         for i in range(len(lvertices)):
             if lnormals[i] > 0:
                 glNormal3fv(normals[lnormals[i] - 1])
-            if ltexture_coords[i] > 0:
-                glTexCoord2fv(texcoords[ltexture_coords[i] - 1])
             glVertex3fv(vertices[lvertices[i] - 1])
         glEnd()
     glDisable(GL_TEXTURE_2D)
@@ -106,7 +104,7 @@ def project_obj(srf, cam, obj_file, image=None):
 def project_sphere(srf, cam, pos, image=None):
     
     viewport = srf.get_size()
-    radius = 1
+    radius = 5
      
     
     glMatrixMode(GL_PROJECTION)
