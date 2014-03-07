@@ -8,12 +8,12 @@ import ga
 pygame.init()
 viewport = (1024,768)
 srf = pygame.display.set_mode(viewport, OPENGL | DOUBLEBUF)
-reference = project_obj(srf, (0, 5,0), "monkey.obj", "screen.bmp")
+reference = project_obj(srf, (0, 50,0), "teddy.obj", "screen3.bmp")
 max_fitness = np.sum(reference == reference)
 print 'max=', max_fitness
 
 def fitness(x):
-    pixels = project_sphere(srf, (0, 50, 0), x, "screen2.bmp")
+    pixels = project_sphere(srf, (0, 50, 0), x, None)
     return  np.sum(pixels == reference)
 
 
