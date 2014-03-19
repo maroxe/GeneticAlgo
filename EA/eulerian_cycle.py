@@ -1,13 +1,12 @@
 import random
-import draw
 import ga
-from resources import graph_examples
+import graph
 from copy import deepcopy
 
     
 n = 8
 vertices = range(n)
-edges = graph_examples.graph1
+edges = graph.graph1
 nb_edges = sum ([edges[i][j] for i in range(n) for j in range(n) if i != j]) / 2
 
 
@@ -79,8 +78,8 @@ print 'fitness = ', fitness(best_x)
 print best_x
 path= reconstruct_path(best_x)
 print path
-draw.draw_graph(edges, 'graph.png')
-draw.draw_graph(edges, 'resources/graph_cycle.png', path=path)
+graph.draw_graph(edges, 'graph.png')
+graph.draw_graph(edges, 'resources/graph_cycle.png', path=path)
 
 
 

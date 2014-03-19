@@ -1,31 +1,50 @@
-import random
 import ga
 import draw
 import numpy as np
+import pydot
+from collections import Counter
+from operator import itemgetter
 
-n = 10
-edges = np.zeros((n, n))
-# edges symetric
+def draw_graph(edges, vertices, M=None, image='graph.png'):
+    if not M:
+        M = [0] * len(edges)
+        
+    graph = pydot.Dot(graph_type='graph')
+    
+    for v in vertices: 
+        graph.add_node(pydot.Node("Node %d" % v))
+        
+    for i, (e,f) in enumerate(edges):
+        color = "red" if  M[i] else "black"
+        edge = pydot.Edge("Node %d" % e, "Node %d" % f, color=color)
+        graph.add_edge(edge)
+           
+    graph.write_png(image)
+    
+n = 20
 vertices = range(n)
-for i in range(n):
-    friends = random.sample(vertices, 3)
-    for f in friends:
-        edges[i][f] = True
-        edges[f][i] = True
+edges = [ (i,j) if i < j else (j,i) for i,j in np.random.randint(n, size=(2*n, 2)) if i != j ]
+edges = map(itemgetter(0), Counter(edges).items())
+m = len(edges)
 
-draw.draw_graph(edges)
 
-def deg(sub_graph, v):
-    return sum([edges[v][w] for w in range(n) if v != w and sub_graph[w]])
+
+def deg(M):
+    deg_m = np.zeros(m)
+    for i, (e, f) in enumerate(edges):
+        if M[i]:
+            deg_m[e] += 1
+            deg_m[f] += 1
+    return sum([max(0, d-1) for d in deg_m])
 
 def fitness(M): 
-    return sum(M) - len(M) * sum([max(0, deg(M, v) - 1) for v in range(n) if M[v] ])
+    return sum(M) - m * deg(M)
 
 ea_algo = ga.EA(fitness=fitness)
 
-max_graph = ea_algo.run(n=n, offspring_size=3, n_generations=1000)
-draw.draw_graph(edges, 'max_graph.png', max_graph)
-
+max_graph = ea_algo.run(n=len(edges), offspring_size=50, n_generations=100, p=0.5)
+print 'fitness = ', fitness(max_graph), ', score = ', sum(max_graph)
+draw_graph(edges, vertices, M=max_graph, image='resources/graph.png')
 
 
 """
