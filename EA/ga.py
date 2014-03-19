@@ -63,11 +63,10 @@ class EA:
                 x = y
                 fit_x = fit_y
                 if self_adapt: offspring_size = int(offspring_size / F)
-                print i, ':', fit_y
+                print i, ':', fit_x
             else:
                 if self_adapt: offspring_size = int(offspring_size * (F**0.25))
             if offspring_size <= 1: offspring_size = 1
-            
         return x
   
 

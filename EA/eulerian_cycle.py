@@ -4,20 +4,12 @@ import ga
 from resources import graph_examples
 from copy import deepcopy
 
-n = 5
+    
+n = 8
 vertices = range(n)
-edges = graph_examples.graph2
+edges = graph_examples.graph1
 nb_edges = sum ([edges[i][j] for i in range(n) for j in range(n) if i != j]) / 2
-# edges = np.zeros((n, n))
-# 
-# edges symetric
-# for i in range(n):
-#     friends = random.sample(vertices, 3)
-#     for f in friends:
-#         edges[i][f] = True
-#         edges[f][i] = True
 
-#draw.draw_graph(edges)
 
 x_init = [ [] for _ in vertices]
 
@@ -36,7 +28,7 @@ def find_match_and_remove(Mv, e):
     return f
         
 def mutation(l, x, bit_range):
-    x_mut = list(x)
+    x_mut = deepcopy(x)
     for _ in range(l):  
         v = random.randint(0, n-1)
         if deg(v) == 2:
@@ -58,9 +50,9 @@ def deg(v):
     return sum([edges[v][i] for i in vertices if i != v])
 
 def fitness(x):
-    path = reconstruct_path(x)
-    cycles_penality = len(path) - nb_edges  
-    return - sum( [deg(v)/2 - len(x[v]) for v in vertices] ) + cycles_penality
+    
+    cycles_penality = nb_edges - sum(map(len, x))  
+    return  - cycles_penality
 
 def reconstruct_path(xx):
     x = deepcopy(xx)
@@ -75,16 +67,20 @@ def reconstruct_path(xx):
         j = find_match_and_remove(x[v], i)
         path.append(j)
         i, v = v, j
-    return path
+    return path[:-2]
+    
+
+    
     
 ea_algo = ga.EA(fitness=fitness, mutation=mutation)
-best_x = ea_algo.run(n=n, x_init=x_init, offspring_size=4, n_generations=100)
+best_x = ea_algo.run(n=n, x_init=x_init, offspring_size=10, n_generations=100, p=0.5)
 
 print 'fitness = ', fitness(best_x)
 print best_x
-print reconstruct_path(best_x)
-
+path= reconstruct_path(best_x)
+print path
 draw.draw_graph(edges, 'graph.png')
+draw.draw_graph(edges, 'resources/graph_cycle.png', path=path)
 
 
 
