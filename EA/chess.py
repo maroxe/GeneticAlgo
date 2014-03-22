@@ -3,24 +3,8 @@ import numpy as np
 from scipy.stats import bernoulli
 import random
 import draw
-n = 7
+n = 20
 
-
-def draw_console(t):
-    x = np.zeros((n , n))
-    for i, j in enumerate(t):
-        x[i][j] = 1
-
-    table = ''
-    for i in range(n):
-        for j in range(n):
-            if x[i][j]:
-                table += 'Q '
-            else: table += 'x '
-        table += '\n'
-    table += '-'*50
-    print table
-    
 def fitness(t, debug=False): 
     x = np.zeros((n , n))
     for i, j in enumerate(t):
@@ -37,7 +21,7 @@ def fitness(t, debug=False):
         s += max(0, q_diag-1)
     return - s 
 
-def mutation(l, x, bit_range):
+def mutation(l, x):
     bits_to_change = random.sample(range(len(x)), l)
     rand_permutation = list(bits_to_change)
     random.shuffle(rand_permutation)
@@ -60,10 +44,10 @@ def crossover(c, x, xx):
 
     return y
 
-ea_algo = ga.EA(fitness=fitness, crossover=crossover, mutation=mutation, bit_range=list(range(8)))
+ea_algo = ga.EA(fitness=fitness, crossover=crossover, mutation=mutation)
 x_init = range(n)
-random.shuffle(x_init)
-best_x =  ea_algo.run(n,x_init , offspring_size=2, n_generations=1000, self_adapt=True)
+
+best_x =  ea_algo.run(n,x_init , offspring_size=10, n_generations=1000)
 print 'fitness = ', fitness(best_x, debug=False)
 
 draw.draw_chess_table(best_x)

@@ -21,9 +21,10 @@ def draw_graph(edges, vertices, M=None, image='graph.png'):
            
     graph.write_png(image)
     
-n = 20
+n = 10
 vertices = range(n)
-edges = [ (i,j) if i < j else (j,i) for i,j in np.random.randint(n, size=(2*n, 2)) if i != j ]
+#edges = [ (i,j) if i < j else (j,i) for i,j in np.random.randint(n, size=(2*n, 2)) if i != j ]
+edges = [(i, i+1) if i+1 < n else (n-1, 0) for i in range(n)]
 edges = map(itemgetter(0), Counter(edges).items())
 m = len(edges)
 
@@ -42,18 +43,9 @@ def fitness(M):
 
 ea_algo = ga.EA(fitness=fitness)
 
-max_graph = ea_algo.run(n=len(edges), offspring_size=50, n_generations=100, p=0.5)
+max_graph = ea_algo.run(n=len(edges), offspring_size=10, n_generations=100, self_adapt=True)
 print 'fitness = ', fitness(max_graph), ', score = ', sum(max_graph)
 draw_graph(edges, vertices, M=max_graph, image='resources/graph.png')
 
 
-"""
-N = 100
-for n in range(10, 31, 10):
-    for lamb in range(2, 7):
-        print 'n = %d lambda = %d' % (n, lamb), \
-            timeit.timeit('ga.run(n=%d, offspring_size=%d, N=10)' % (n, lamb), 'import ga', number=N)
-    print '-' * 10
-#print timeit.timeit('ga.run(n=50, lamb=5, N=10, adapt_lamb=True)', 'import ga', number=N)
 
-"""

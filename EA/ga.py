@@ -1,12 +1,15 @@
 import numpy as np
 import random
 from scipy.stats import bernoulli
+import pygame
 
-def default_mutation(l, x, bit_range):
+clock = pygame.time.Clock()
+
+def default_mutation(l, x):
     bits_to_change = random.sample(range(len(x)), l)
     x_mut = list(x)
     for b in bits_to_change:
-        x_mut[b] = random.choice(bit_range)
+        x_mut[b] = random.choice([0, 1])
     return x_mut
 
 def default_crossover(c, x, xx):
@@ -16,16 +19,14 @@ def default_crossover(c, x, xx):
 
 
 class EA:
-    def __init__(self, fitness, bit_range=None, mutation=None, crossover=None):
+    def __init__(self, fitness, mutation=None, crossover=None):
         if not mutation:
             mutation = default_mutation
         if not crossover:
             crossover = default_crossover
-        if not bit_range:
-            bit_range = [0, 1]
+
             
         self.mutation = mutation
-        self.bit_range = bit_range 
         self.crossover = crossover
         self.fitness = fitness
         
@@ -45,11 +46,11 @@ class EA:
 
         fit_x = self.fitness(x)
         # optimization
-        for i in range(n_generations):
+        for _ in range(n_generations):
         #while fit_x < 0:
             # mutation
             l = np.random.binomial(n, p)
-            x_mut = [self.mutation(l, x, self.bit_range) for _ in range(offspring_size)]
+            x_mut = [self.mutation(l, x) for _ in range(offspring_size)]
             xx = x_mut[ np.argmax(map(self.fitness, x_mut)) ] # x'
             
 
@@ -62,12 +63,19 @@ class EA:
             if fit_y > fit_x: 
                 x = y
                 fit_x = fit_y
-                if self_adapt: offspring_size = int(offspring_size / F)
-                print i, ':', fit_x
+                if self_adapt: 
+                    offspring_size = int(offspring_size * (F**0.25))+1
+                    
+                yield x
+
             else:
-                if self_adapt: offspring_size = int(offspring_size * (F**0.25))
+                if self_adapt: 
+                    offspring_size = int(offspring_size / F)
             if offspring_size <= 1: offspring_size = 1
-        return x
+            
+            list(pygame.event.get())
+                    
+        #return x
   
 
 

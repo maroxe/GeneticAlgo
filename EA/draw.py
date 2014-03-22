@@ -1,8 +1,6 @@
 import numpy as np
 import pygame
 
-   
-
 def draw_chess_table(t):
     n = len(t)
     x = 800 

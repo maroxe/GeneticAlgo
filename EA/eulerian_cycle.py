@@ -26,7 +26,7 @@ def find_match_and_remove(Mv, e):
         Mv.pop(k+1)
     return f
         
-def mutation(l, x, bit_range):
+def mutation(l, x):
     x_mut = deepcopy(x)
     for _ in range(l):  
         v = random.randint(0, n-1)
