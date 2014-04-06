@@ -31,7 +31,7 @@ class EA:
         self.fitness = fitness
         
 
-    def run(self, n=10, x_init=None, offspring_size=5, n_generations=10, p=None, c=None, self_adapt=False):
+    def run(self, n, x_init, offspring_size=5, n_generations=10, p=None, c=None, self_adapt=False, max_fitness=None):
         # parameters
         if p is None:
             p = float(offspring_size) / n   # mutation probability
@@ -40,8 +40,6 @@ class EA:
         F = 1.5
         
         # initialization
-        if x_init == None:
-            x_init = [ random.choice(self.bit_range) for _ in range(n)]
         x = x_init
 
         fit_x = self.fitness(x)
@@ -55,27 +53,32 @@ class EA:
             
 
             # crossover
-            y_cross = [self.crossover(c, x, xx) for _ in range(offspring_size)]
-            y = y_cross[ np.argmax( map(self.fitness, y_cross) ) ]
-            
+            if offspring_size > 1:
+                y_cross = [self.crossover(c, x, xx) for _ in range(offspring_size)]
+                y = y_cross[ np.argmax( map(self.fitness, y_cross) ) ]
+            else:
+                y = xx
+
             # selection
             fit_y = self.fitness(y)
             if fit_y > fit_x: 
                 x = y
                 fit_x = fit_y
+                if(fit_x == max_fitness):
+                    return x  
+                
                 if self_adapt: 
                     offspring_size = int(offspring_size * (F**0.25))+1
                     
-                yield x
+                #yield x
 
             else:
                 if self_adapt: 
                     offspring_size = int(offspring_size / F)
             if offspring_size <= 1: offspring_size = 1
-            
-            list(pygame.event.get())
+            #list(pygame.event.get())
                     
-        #return x
+        return x
   
 
 

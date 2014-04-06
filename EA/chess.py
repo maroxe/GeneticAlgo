@@ -13,13 +13,13 @@ def fitness(t, debug=False):
     s = 0
 
     # diags
-    for k in range(-n+1, n):
+    for k in range(-n + 1, n):
         # diag (i, i+k) (n-i-1, i+k)
-        q_diag = sum([ x[i][i + k] for i in range(max(0, -k), min(n, n-k))])
-        s += max(0, q_diag-1) 
-        q_diag = sum([ x[n-i-1][i+k] for i in range(max(0, -k), min(n, n-k))])
-        s += max(0, q_diag-1)
-    return - s 
+        q_diag = sum([ x[i][i + k] for i in range(max(0, -k), min(n, n - k))])
+        s += max(0, q_diag - 1) 
+        q_diag = sum([ x[n - i - 1][i + k] for i in range(max(0, -k), min(n, n - k))])
+        s += max(0, q_diag - 1)
+    return -s 
 
 def mutation(l, x):
     bits_to_change = random.sample(range(len(x)), l)
@@ -47,7 +47,7 @@ def crossover(c, x, xx):
 ea_algo = ga.EA(fitness=fitness, crossover=crossover, mutation=mutation)
 x_init = range(n)
 
-best_x =  ea_algo.run(n,x_init , offspring_size=10, n_generations=1000)
+best_x = ea_algo.run(n, x_init, offspring_size=10, n_generations=1000)
 print 'fitness = ', fitness(best_x, debug=False)
 
 draw.draw_chess_table(best_x)
