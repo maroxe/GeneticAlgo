@@ -2,7 +2,7 @@ import numpy as np
 import random
 from scipy.stats import bernoulli
 import pygame
-
+import rules
 clock = pygame.time.Clock()
 
 def default_mutation(l, x):
@@ -51,7 +51,6 @@ class EA:
             x_mut = [self.mutation(l, x) for _ in range(offspring_size)]
             xx = x_mut[ np.argmax(map(self.fitness, x_mut)) ] # x'
             
-
             # crossover
             if offspring_size > 1:
                 y_cross = [self.crossover(c, x, xx) for _ in range(offspring_size)]
@@ -61,6 +60,7 @@ class EA:
 
             # selection
             fit_y = self.fitness(y)
+                
             if fit_y > fit_x: 
                 x = y
                 fit_x = fit_y
@@ -69,15 +69,16 @@ class EA:
                 
                 if self_adapt: 
                     offspring_size = int(offspring_size * (F**0.25))+1
-                    
-                #yield x
+                
+                rules.draw_tree(y, "resources/finance/beststrat.png")
+                print 'step: ', fit_x
 
             else:
                 if self_adapt: 
                     offspring_size = int(offspring_size / F)
             if offspring_size <= 1: offspring_size = 1
             #list(pygame.event.get())
-                    
+            
         return x
   
 
